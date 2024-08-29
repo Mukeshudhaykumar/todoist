@@ -1,0 +1,65 @@
+
+.task-item {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff; /* White background for task items */
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.task-item:hover {
+  background-color: #f0f0f0; /* Light gray background on hover */
+}
+
+.checkbox-circle {
+  appearance: none;
+  background-color: #ecf0f1;
+  border: 2px solid #3498db;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.checkbox-circle:checked {
+  background-color: #3498db;
+  border-color: #2980b9;
+}
+
+.checkbox-circle:checked::after {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.task-content {
+  flex-grow: 1; /* Ensure content takes up remaining space */
+}
+
+.task-title {
+  margin: 0;
+  font-size: 18px;
+  color: #34495e;
+  font-weight: 600;
+}
+
+.task-description {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #7f8c8d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
