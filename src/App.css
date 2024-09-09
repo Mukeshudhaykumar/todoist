@@ -1,53 +1,128 @@
-/* styles.css or App.css */
-
+/* Base Layout */
 .app-container {
   display: flex;
   height: 100vh; /* Full viewport height */
   margin: 0;
-  background-color: #f4f4f4; /* Light background color for the whole app */
+  background-color: #e9ecef; /* Light gray background color for the whole app */
 }
 
+
+
+/* Sidebar Styles */
 .sidebar {
-  width: 250px; /* Width of the sidebar */
-  background-color: #333; /* Dark background color for the sidebar */
-  color: #fff; /* White text color */
+  background-color: #2c3e50; /* Dark background for the sidebar */
+  width: 300px;
   padding: 20px;
+  color: #ecf0f1; /* Light text color */
+  border-right: 2px solid #34495e; /* Border line on the right */
   display: flex;
   flex-direction: column;
-  position: fixed; /* Keeps the sidebar in place */
-  height: 100%; /* Full height */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  height: 100vh; /* Full viewport height */
+  position: fixed; /* Keep the sidebar fixed on the left */
+  top: 0;
+  left: 0;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  overflow-y: auto; /* Allow sidebar to scroll if content overflows */
 }
 
+/* Content Area Styles */
 .content {
-  margin-left: 250px; /* Same as the sidebar width */
+  margin-left: 300px; /* Space for the fixed sidebar */
   padding: 20px;
-  width: calc(100% - 250px); /* Full width minus sidebar width */
-  overflow-y: auto; /* Scroll if content overflows */
+  width: calc(100% - 300px); /* Full width minus sidebar width */
   background-color: #fff; /* White background for content area */
+  overflow-y: auto; /* Scroll if content overflows */
+  height: 100vh; /* Full viewport height */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align items to the top */
 }
 
-/* Optional: Style for the sidebar links */
-.sidebar a {
-  color: #fff;
-  text-decoration: none;
+/* Task List Styles */
+.task-list {
+  max-width: 900px; /* Increased max width for task list */
+  width: 100%; /* Make it responsive */
+  margin: auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-list h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+/* Task Item Styles */
+.task-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative;
+}
+
+.task-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.task-item:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+.checkbox-circle {
+  display: none; /* Hide the default checkbox */
+}
+
+.checkbox-circle-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  background: #fff;
+  margin-right: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.checkbox-circle-label::after {
+  content: '';
   display: block;
-  margin-bottom: 15px;
-  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background-color 0.3s ease;
 }
 
-.sidebar a:hover {
-  color: #ddd; /* Lighter color on hover */
+.checkbox-circle:checked + .checkbox-circle-label {
+  background: #007bff;
+  border-color: #007bff;
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-    width: 200px; /* Adjust sidebar width for smaller screens */
-    margin: 0;
-  }
+.checkbox-circle:checked + .checkbox-circle-label::after {
+  background: #fff;
+}
 
-  .content {
-    margin-left: 0;
-    width: 100%;
-  }
+.task-item h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.task-item p {
+  margin: 5px 0 0;
+  color: #666;
 }

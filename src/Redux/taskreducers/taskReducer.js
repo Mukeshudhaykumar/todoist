@@ -1,4 +1,4 @@
-import { ADD_TASK, REMOVE_TASK } from '../actions/taskActions';
+import {ADD_TASK, REMOVE_TASK} from '../taskactions/taskActions';
 
 const initialState = {
   tasks: [], // Array to hold the tasks
@@ -12,15 +12,15 @@ const taskReducer = (state = initialState, action) => {
     case ADD_TASK:
       return {
         ...state,
-        tasks: [...state.tasks, action.payload.task], // Add new task to the array
+        tasks: [...state.tasks, action.payload], // Add new task to the array
         isAdded: true,
-        user: action.payload.user, // Update user information
+        // Assuming user info is not relevant for adding tasks here, remove `user` if not needed
       };
 
     case REMOVE_TASK:
       return {
         ...state,
-        tasks: state.tasks.filter((task, index) => index !== action.payload.taskId), // Remove task by index
+        tasks: state.tasks.filter((_, index) => index !== action.payload), // Remove task by index
         isRemoved: true,
       };
 

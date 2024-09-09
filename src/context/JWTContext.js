@@ -1,115 +1,93 @@
 import React, { createContext, useEffect, useReducer } from 'react';
-import jwtDecode from 'jwt-decode';
 import axios from 'axios';
-import { ADD_TASK, REMOVE_TASK } from '../Redux/actions/taskActions';
-import { taskReducer } from '../Redux/reducers/taskReducer';
+import { ACCOUNT_INITIALISE, LOGIN, LOGOUT } from '../Redux/logactions/logAction';
+import logActReducers from '../Redux/logreducers/logActReducers';
+import Loader from '../components/Loader/loader';
 
 const initialState = {
-  isAdded: false,
-  isRemoved: false,
-  user: null,
+  isLoggedIn: false,
+  isInitialised: false,
+  user: null
 };
 
-const verifyToken = (serviceToken) => {
-  if (!serviceToken) {
+const verifyToken = (token) => {
+  if (!token) return false;
+  try {
+    const { exp } = JSON.parse(atob(token.split('.')[1]));
+    return exp > Date.now() / 1000;
+  } catch {
     return false;
   }
-
-  const decoded = jwtDecode(serviceToken);
-  return decoded.exp > Date.now() / 1000;
 };
 
-const setSession = (serviceToken) => {
-  if (serviceToken) {
-    localStorage.setItem('serviceToken', serviceToken);
-    axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
+const setSession = (token) => {
+  if (token) {
+    localStorage.setItem('serviceToken', token);
   } else {
     localStorage.removeItem('serviceToken');
-    delete axios.defaults.headers.common.Authorization;
   }
 };
 
 const JWTContext = createContext({
   ...initialState,
-  addTask: () => Promise.resolve(),
-  removeTask: () => {},
+  login: () => Promise.resolve(),
+  logout: () => {}
 });
 
 export const JWTProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(taskReducer, initialState);
+  const [state, dispatch] = useReducer(logActReducers, initialState);
 
-  const addTask = async (task) => {
+  const login = async (username, password) => {
     try {
-      const response = await axios.post('http://192.168.1.217/api/tasks', task);
+      const response = await axios.post('http://192.168.1.214:8000/account/login', { username, password });
       const { access_token, user } = response.data;
       setSession(access_token);
-      dispatch({
-        type: ADD_TASK,
-        payload: { task, user },
-      });
+      dispatch({ type: LOGIN, payload: { user } });
     } catch (error) {
-      console.error('Task addition failed', error);
+      console.error('Login error:', error);
+      throw new Error('Login failed');
     }
   };
 
-  const removeTask = (taskId) => {
+  const logout = async () => {
     try {
-      dispatch({
-        type: REMOVE_TASK,
-        payload: { taskId },
-      });
+      await axios.post('http://192.168.1.213:8000/account/logout');
+      setSession(null);
+      dispatch({ type: LOGOUT });
     } catch (error) {
-      console.error('Task removal failed', error);
+      console.error('Logout error:', error);
+      throw new Error('Logout failed');
     }
   };
 
   useEffect(() => {
     const init = async () => {
       try {
-        const serviceToken = window.localStorage.getItem('serviceToken');
-        if (serviceToken && verifyToken(serviceToken)) {
-          setSession(serviceToken);
-          const response = await axios.get('/api/auth/me');
+        const token = localStorage.getItem('serviceToken');
+        if (token && verifyToken(token)) {
+          setSession(token);
+          const response = await axios.get('http://192.168.1.210:8000/auth/me', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
           const { user } = response.data;
-          dispatch({
-            type: 'AUTH_INITIALIZE',
-            payload: {
-              isAdded: true,
-              isRemoved: false,
-              user,
-            },
-          });
+          dispatch({ type: ACCOUNT_INITIALISE, payload: { isLoggedIn: true, user } });
         } else {
-          dispatch({
-            type: 'AUTH_INITIALIZE',
-            payload: {
-              isAdded: false,
-              isRemoved: false,
-              user: null,
-            },
-          });
+          dispatch({ type: ACCOUNT_INITIALISE, payload: { isLoggedIn: false, user: null } });
         }
       } catch (err) {
-        console.error('Initialization failed', err);
-        dispatch({
-          type: 'AUTH_INITIALIZE',
-          payload: {
-            isAdded: false,
-            isRemoved: false,
-            user: null,
-          },
-        });
+        console.error('Initialization error:', err);
+        dispatch({ type: ACCOUNT_INITIALISE, payload: { isLoggedIn: false, user: null } });
       }
     };
 
     init();
   }, []);
 
-  return (
-    <JWTContext.Provider value={{ ...state, addTask, removeTask }}>
-      {children}
-    </JWTContext.Provider>
-  );
+  if (!state.isInitialised) {
+    return <Loader />;
+  }
+
+  return <JWTContext.Provider value={{ ...state, login, logout }}>{children}</JWTContext.Provider>;
 };
 
 export default JWTContext;

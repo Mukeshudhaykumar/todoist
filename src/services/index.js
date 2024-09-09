@@ -1,84 +1,85 @@
 import jwt from 'jsonwebtoken';
 import AxiosMockAdapter from 'axios-mock-adapter';
-
-import axios from './axios';
+import axios from '../services/axios';
 import { CONFIG } from '../config/constant';
 
 const JWT_SECRET = CONFIG.jwt.secret;
 const JWT_EXPIRES_TIME = CONFIG.jwt.timeout;
 
-const services = new AxiosMockAdapter(axios, { delayResponse:0});
+const services = new AxiosMockAdapter(axios, { delayResponse: 500 });
 
 const delay = (timeout) => {
-    return new Promise((res)=> setTimeout(res,timeout));
+    return new Promise((res) => setTimeout(res, timeout));
 };
 
 const users = [
     {
-        username:'admin',
-        password:'password',
+        id: '10a2806c-0729-4a49-96ce-d515901f74ba',
+        email: 'string@gmail.com',
+        password: 'stringS@1',
     },
 ];
 
-services.onPost('/api/account/login').reply(async (config) => {
+services.onPost('http://192.168.1.214:8000/account/login').reply(async (config) => {
     try {
-      await delay(500);
-  
-      const { email, password } = JSON.parse(config.data);
-      const user = users.find((_user) => _user.email === email);
-  
-      if (!user) {
-        return [400, { message: 'Verify Your Email & Password' }];
-      }
-  
-      if (user.password !== password) {
-        return [400, { message: 'Invalid Password' }];
-      }
-  
-      const serviceToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_TIME });
-  
-      return [
-        200,
-        {
-          serviceToken,
-          user: {
-            id: user.id,
-            email: user.email
-          }
+        await delay(500);
+
+        const { email, password } = JSON.parse(config.data);
+        const user = users.find((_user) => _user.email === email);
+
+        if (!user) {
+            return [400, { message: 'Verify Your Email & Password' }];
         }
-      ];
+
+        if (user.password !== password) {
+            return [400, { message: 'Invalid Password' }];
+        }
+
+        const serviceToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_TIME });
+
+        return [
+            200,
+            {
+                serviceToken,
+                user: {
+                    id: user.id,
+                    email: user.email,
+                },
+            },
+        ];
     } catch (err) {
-      console.error(err);
-      return [500, { message: 'Server Error' }];
+        console.error(err);
+        return [500, { message: 'Server Error' }];
     }
 });
-  
-services.onGet('/api/account/me').reply((config) => {
+
+services.onGet('http://192.168.1.214:8000/auth/me').reply((config) => {
     try {
         const { Authorization } = config.headers;
         if (!Authorization) {
             return [401, { message: 'Token Missing' }];
         }
-  
+
         const serviceToken = Authorization.split(' ')[1];
-        const { userId } = jwt.verify(serviceToken, JWT_SECRET);
+        const decoded = jwt.verify(serviceToken, JWT_SECRET);
+        const userId = decoded.userId;
         const user = users.find((_user) => _user.id === userId);
-  
+
         if (!user) {
             return [401, { message: 'Invalid Token' }];
         }
-  
+
         return [
             200,
             {
-            user: {
-                id: user.id,
-                email: user.email
-            }
-            }
+                user: {
+                    id: user.id,
+                    email: user.email,
+                },
+            },
         ];
     } catch (err) {
-      return [500, { message: 'Server Error' }];
+        console.error(err);
+        return [500, { message: 'Server Error' }];
     }
 });
-  

@@ -1,4 +1,4 @@
-export const BASE_URL ='';
+export const BASE_URL ='/TekTodoist';
 export const BASE_TITLE = 'TekTodoist';
 
 export const CONFIG ={

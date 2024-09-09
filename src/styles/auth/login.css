@@ -1,0 +1,99 @@
+/* App container to center the form vertically and horizontally */
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #e2e2e2 0%, #ffffff 100%); /* Gradient background */
+}
+
+/* Styling the form itself */
+.login-form {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Styling the image above the form */
+.login-title-image {
+  width: 140px; /* Slightly larger image */
+  margin: 0 auto 20px;
+  display: block;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Add a subtle zoom effect to the image on hover */
+.login-title-image:hover {
+  transform: scale(1.05);
+}
+
+/* Styling the form title (optional if you have one) */
+.login-form h2 {
+  margin-bottom: 24px;
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* General form input styling */
+.form-group input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Focus state for the inputs */
+.form-group input:focus {
+  outline: none;
+  border-color: #0056b3;
+  box-shadow: 0 0 8px rgba(0, 86, 179, 0.25);
+}
+
+/* Checkbox styling */
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Error message styling */
+.invalid-feedback {
+  color: #dc3545;
+  font-size: 14px;
+}
+
+/* Button styling */
+button {
+  padding: 14px 22px;
+  border: none;
+  border-radius: 8px;
+  background: #0056b3;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 20px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Button hover effect */
+button:hover {
+  background: #004494;
+  transform: translateY(-2px);
+}
+
+/* Button active effect */
+button:active {
+  transform: translateY(0);
+}

@@ -1,13 +1,18 @@
-// src/index.js
+
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import store from './Redux/store';
 import App from './App';
+import { JWTProvider } from './context/JWTContext'; // Ensure this path is correct
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+
+root.render(
   <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+    <JWTProvider>
+      <App />
+    </JWTProvider>
+  </Provider>
 );

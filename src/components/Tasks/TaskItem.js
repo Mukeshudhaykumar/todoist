@@ -1,12 +1,13 @@
 import React from 'react';
 import '../../styles/tasks/TaskItem.css';
+
 function TaskItem({ task, onToggle }) {
   return (
     <div className="task-item">
-      <input 
-        type="checkbox" 
-        className="checkbox-circle" 
-        onClick={onToggle} 
+      <input
+        type="checkbox"
+        className="checkbox-circle"
+        onChange={onToggle}
       />
       <div className="task-content">
         <h3 className="task-title">{task.title}</h3>
